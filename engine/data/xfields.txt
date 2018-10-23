@@ -1,0 +1,35 @@
+icon|Иконка||select|__NEWL__new__NEWL__hit|0|0|0|0
+cena_maslom|Цена маслом|21|text||1|0|0|1
+old_cena_maslom|Старая цена маслом|21|text||1|0|0|1
+art|Артикул||text||1|0|0|0
+cena_m|Цена M||text||0|0|0|0
+razmer_m|Размер M||text||0|0|0|0
+pod_m|Подробности M||text||1|0|0|0
+cena_l|Цена L||text||1|0|0|0
+razmer_l|Размер L||text||1|0|0|0
+pod_l|Подробности L||text||1|0|0|0
+cena_xl|Цена XL||text||1|0|0|0
+razmer_xl|Размер XL||text||1|0|0|0
+pod_xl|Подробности XL||text||1|0|0|0
+cena_xxl|Цена XXL||text||1|0|0|0
+razmer_xxl|Размер XXL||text||1|0|0|0
+pod_xxl|Подробности XXL||text||1|0|0|0
+cena_xxxl|Цена XXXL||text||1|0|0|0
+razmer_xxxl|Размер XXXL||text||1|0|0|0
+pod_xxxl|Подробности XXXL||text||1|0|0|0
+articul2|Артикул 2||text||1|0|0|0
+old_id|Старый ID||text||1|0|0|0
+skidka|Скидка %||text||1|0|0|0
+razmer_orig|Оригинальный размер||text||1|0|0|0
+cena_m_old|Старая цена M||text||1|0|0|0
+cena_l_old|Старая цена L||text||1|0|0|0
+cena_xl_old|Старая цена XL||text||1|0|0|0
+cena_xxl_old|Старая цена XXL||text||1|0|0|0
+cena_xxxl_old|Старая цена XXXL||text||1|0|0|0
+art_interior|Артикул для интерьеров||text||1|0|0|0
+ishodnik|Исходник||text||1|0|0|0
+maslo|Масло||text||1|0|0|1
+gotov_m|В наличии M||text||1|0|0|0
+gotov_l|В наличии L||text||1|0|0|0
+gotov_xl|В наличии XL||text||1|0|0|0
+gotov_xxl|В наличии XXL||text||1|0|0|0
