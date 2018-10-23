@@ -1,0 +1,21 @@
+.block_one{width:42%;
+    display:inline-block ;}
+    .block_two{width:56%;
+    display: inline-block;}
+    .list_two{
+        text-align: left;
+    }
+    .list_two span{
+        color: #b53643;
+    }
+    .list_two img{width: 10px; margin-right: 5px; vertical-align: middle; }
+    .list_one span{
+        font-size: 17px;
+    }
+    .list_one h3{
+        font-size: 26px;
+        color: #b53643;
+    }
+    @media (max-width: 1123px){
+        .list_two{ font-size: 14px;}
+    }
