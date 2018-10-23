@@ -19,7 +19,12 @@ spl_autoload_register('autoload');
 
 require_once('engine/data/dbconfig.php');
 
-$init = new \controllers\FilterController(new \controllers\Connection());
+$controller = new \controllers\FilterController(new \controllers\Connection());
+
+$controller->filter->Filter($_REQUEST);
+
+$controller->render();
+
 
 //$stmt = $dbh->prepare("SELECT * FROM ${PREFIX} WHERE xfields LIKE ?");
 //
