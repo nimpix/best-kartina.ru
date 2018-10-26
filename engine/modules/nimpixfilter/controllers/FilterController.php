@@ -1,4 +1,5 @@
 <?
+
 namespace controllers;
 
 use models\Filter;
@@ -9,14 +10,18 @@ Class FilterController
     private $prefix;
     public $filter;
 
-    public function __construct(Connection $connection){
+    public function __construct(Connection $connection)
+    {
+        dle_session();
         $this->dbh = $connection;
         $this->prefix = $this->dbh->prefix;
+
         $this->filter = new Filter();
     }
 
-    public function render(){
-        require_once (ENGINE_DIR . '/modules/nimpixfilter/views/filter.tpl');
+    public function render()
+    {
+
     }
 
 }

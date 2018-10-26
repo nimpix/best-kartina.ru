@@ -33,3 +33,4 @@ gotov_m|В наличии M||text||1|0|0|0
 gotov_l|В наличии L||text||1|0|0|0
 gotov_xl|В наличии XL||text||1|0|0|0
 gotov_xxl|В наличии XXL||text||1|0|0|0
+color|Цвет||text||0|0|0|0
