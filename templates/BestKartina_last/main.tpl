@@ -18,6 +18,7 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
 	<!-- Main site Js/css-->
+
 	<!--[if lt IE 9]>
 	<script type="text/javascript" src="{THEME}/js/html5shiv.min.js"></script>
 	<![endif]-->
@@ -125,7 +126,10 @@
 				<!-- Баннер -->
 			</aside>
 			<div class="content">
-				{info}
+				[not-category=54]
+					{info}
+				[/not-category]
+
 				[aviable=main|cat]
 				[not-category=52]
 				<h1>Каталог картин для создания уютного интерьера:</h1>
@@ -150,9 +154,12 @@
 				[/banner_kat_info_top]
 				[/aviable]
 
+				{include file="filter.tpl"}
+				{include file="/engine/modules/nimpixfilter/nimpix_filter.php"}
+				
+
 
 				[aviable=main|cat]
-				{include file="engine/modules/nimpixfilter/nimpix_filter.php"}
 				<div class="catalog_block">
 					<div class="row">
 						{content}

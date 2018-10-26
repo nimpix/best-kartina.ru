@@ -474,6 +474,7 @@ if ($config['allow_alt_url'] == "yes") {
 	$tpl->set( '{newposts-link}', $PHP_SELF . "?subaction=newposts" );
 
 }
+
 $tpl->compile( 'login_panel' );
 $tpl->clear();
 

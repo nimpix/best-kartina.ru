@@ -8,57 +8,82 @@ class Filter
     private $name;
     private $tpl;
 
-    public function __construct($tpl)
+    public function __construct($tpl, $dbh)
     {
         $this->tpl = $tpl;
+        $this->db = $dbh->db;
     }
 
     public function generateHtml()
     {
-        $stmt = $this->db->prepare('SELECT `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE :name');
+        $stmt = $this->db->prepare("SELECT `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE '%color%'");
 
         $tpl = $this->tpl;
+        $stmt->execute();
 
-        $stmt->bindParam(':name', $this->name);
-        $this->name = '%зеленый%';
-        $tpl->dir = TEMPLATE_DIR;
-        $tpl->load_template('filter.tpl');
-        $tpl->set('{content}', $content);
-        $tpl->set('{full-link}', $news_url);
-        $tpl->set('{image}', $post_image);
-        $tpl->compile('content');
-        echo $tpl->result['content'];
-        unset($tpl->result['content']);
+        $colors = [];
 
+        while ($row = $stmt->fetch()) {
+           $xfields = xfieldsdataload($row['xfields']);
+           $color_name =  $xfields['color'];
+           $color_code = $xfields['color_code'];
+
+           array_push($colors,['name'=> $color_name,'code'=>$color_code]);
+        }
+
+        $content = '';
+
+        foreach($colors as $color){
+            $content .= "<div class='color' data-color='".$color['name']."' style='background:".$color['code']."'></div>";
+        }
+
+        $result = '<div class="color-block">'.$content.'</div>';
+
+       echo $result;
+
+//        $tpl->dir = TEMPLATE_DIR;
+//        $tpl->load_template('filter.tpl');
+//
+//        $tpl->set('{filter}','1111111111');
+//        $tpl->compile( 'content' );
     }
 
 
     public function Filter($request, $dbh)
     {
-        $this->db = $dbh->db;
-
+        if(empty($request)){
+            return false;
+        }
         $stmt = $this->db->prepare('SELECT `id`, `title`, `category`, `alt_name`, `short_story`, `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE :name');
 
         $stmt->bindParam(':name', $this->name);
-        $this->name = '%'.$request["color"].'%';
+        $this->name = '%' . $request["color"] . '%';
 
         if ($stmt->execute()) {
+
+            $render = '';
 
             while ($row = $stmt->fetch()) {
 
                 $xfields = xfieldsdataload($row['xfields']);
                 $post_image = self::post_image($row['short_story']);
-
+                $post_image = str_replace('https','http',$post_image);
                 $news_url = get_url(intval($row['category'])) . '/' . $row['id'] . '-' . $row['alt_name'] . '.html';
 
-                echo '<div class="column-4">
+                $skidka = '<span class="discount">-' . $xfields["skidka"] . '%</span>';
+
+                if(empty($xfields["skidka"])){
+                    $skidka = '';
+                }
+
+                $render .= '<div class="column-4">
                       <div class="cat-item">
                         <h3><a href="' . $news_url . '#akcii">' . $row["title"] . '</a></h3>
                         <div class="cat-img">
                           <a href="' . $news_url . '#akcii">
                             <!-- <img src="{image-1}" alt=""> -->
                             <img src="' . $post_image . '" alt="">
-                            <span class="discount">-' . $xfields["skidka"] . '%</span>
+                            '.$skidka.'
                           </a>
                         </div>
                         <div class="old_price">Старая цена: <span>' . $xfields["cena_m_old"] . '</span> руб.</div>
@@ -74,6 +99,10 @@ class Filter
                     ';
             }
         }
+
+        $result = '<div class="row">'.$render.'</div>';
+
+        return $result;
     }
 
     public function post_image($short_story)
