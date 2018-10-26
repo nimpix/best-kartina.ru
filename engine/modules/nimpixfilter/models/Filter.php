@@ -6,42 +6,68 @@ class Filter
 {
     private $db;
     private $name;
+    private $tpl;
 
-    public function Filter($request, $dbh, $tpl)
+    public function __construct($tpl)
+    {
+        $this->tpl = $tpl;
+    }
+
+    public function generateHtml()
+    {
+        $stmt = $this->db->prepare('SELECT `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE :name');
+
+        $tpl = $this->tpl;
+
+        $stmt->bindParam(':name', $this->name);
+        $this->name = '%зеленый%';
+        $tpl->dir = TEMPLATE_DIR;
+        $tpl->load_template('filter.tpl');
+        $tpl->set('{content}', $content);
+        $tpl->set('{full-link}', $news_url);
+        $tpl->set('{image}', $post_image);
+        $tpl->compile('content');
+        echo $tpl->result['content'];
+        unset($tpl->result['content']);
+
+    }
+
+
+    public function Filter($request, $dbh)
     {
         $this->db = $dbh->db;
 
         $stmt = $this->db->prepare('SELECT `id`, `title`, `category`, `alt_name`, `short_story`, `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE :name');
 
         $stmt->bindParam(':name', $this->name);
-        $this->name = '%зеленый%';
+        $this->name = '%'.$request["color"].'%';
 
         if ($stmt->execute()) {
 
             while ($row = $stmt->fetch()) {
 
-                $xfields = xfieldsdataload( $row['xfields']);
+                $xfields = xfieldsdataload($row['xfields']);
                 $post_image = self::post_image($row['short_story']);
 
-                $news_url = get_url( intval( $row['category'] ) ) . '/' .$row['id'].'-'.$row['alt_name'].'.html';
+                $news_url = get_url(intval($row['category'])) . '/' . $row['id'] . '-' . $row['alt_name'] . '.html';
 
                 echo '<div class="column-4">
                       <div class="cat-item">
-                        <h3><a href="'.$news_url.'#akcii">'.$row["title"].'</a></h3>
+                        <h3><a href="' . $news_url . '#akcii">' . $row["title"] . '</a></h3>
                         <div class="cat-img">
-                          <a href="'.$news_url.'#akcii">
+                          <a href="' . $news_url . '#akcii">
                             <!-- <img src="{image-1}" alt=""> -->
-                            <img src="'.$post_image.'" alt="">
-                            <span class="discount">-'.$xfields["skidka"].'%</span>
+                            <img src="' . $post_image . '" alt="">
+                            <span class="discount">-' . $xfields["skidka"] . '%</span>
                           </a>
                         </div>
-                        <div class="old_price">Старая цена: <span>'.$xfields["cena_m_old"].'</span> руб.</div>
-                        <div class="new_price">Новая цена: <span>'.$xfields["cena_m"].'</span> руб.</div>
+                        <div class="old_price">Старая цена: <span>' . $xfields["cena_m_old"] . '</span> руб.</div>
+                        <div class="new_price">Новая цена: <span>' . $xfields["cena_m"] . '</span> руб.</div>
                       </div>
                       <div class="cat-btns clearfix">
-                        <a href="'.$news_url.'#akcii" class="btn btn-more">Подробнее</a>
-                        <input type="hidden" class="hidden-size" name="size" value="'.$xfields["razmer_m"].' см">
-                        <input type="hidden" class="hidden-id" name="id" value="'.$row["id"].'">
+                        <a href="' . $news_url . '#akcii" class="btn btn-more">Подробнее</a>
+                        <input type="hidden" class="hidden-size" name="size" value="' . $xfields["razmer_m"] . ' см">
+                        <input type="hidden" class="hidden-id" name="id" value="' . $row["id"] . '">
                         <a href="" class="btn btn-order" onclick="yaCounter27000663.reachGoal(\'order_form\'); return true;">Заказать</a>
                       </div>
                     </div>
@@ -50,21 +76,27 @@ class Filter
         }
     }
 
-    public function post_image($short_story){
+    public function post_image($short_story)
+    {
 
         $images = array();
         preg_match_all('/(img|src)=("|\')[^"\'>]+/i', $short_story, $media);
-        $data=preg_replace('/(img|src)("|\'|="|=\')(.*)/i',"$3",$media[0]);
+        $data = preg_replace('/(img|src)("|\'|="|=\')(.*)/i', "$3", $media[0]);
 
-        foreach($data as $url) {
+        foreach ($data as $url) {
             $info = pathinfo($url);
             if (isset($info['extension'])) {
-                if ($info['filename'] == "spoiler-plus" OR $info['filename'] == "spoiler-plus" ) continue;
+                if ($info['filename'] == "spoiler-plus" OR $info['filename'] == "spoiler-plus") {
+                    continue;
+                }
                 $info['extension'] = strtolower($info['extension']);
-                if (($info['extension'] == 'jpg') || ($info['extension'] == 'jpeg') || ($info['extension'] == 'gif') || ($info['extension'] == 'png')) array_push($images, $url);
+                if (($info['extension'] == 'jpg') || ($info['extension'] == 'jpeg') || ($info['extension'] == 'gif') || ($info['extension'] == 'png')) {
+                    array_push($images, $url);
+                }
             }
         }
         return $images[0];
     }
 }
+
 
