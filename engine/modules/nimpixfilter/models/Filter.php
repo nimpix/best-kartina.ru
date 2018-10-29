@@ -17,7 +17,6 @@ class Filter
     public function generateHtml()
     {
         $stmt = $this->db->prepare("SELECT `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE '%color%'");
-
         $tpl = $this->tpl;
         $stmt->execute();
 
