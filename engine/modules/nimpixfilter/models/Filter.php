@@ -17,29 +17,27 @@ class Filter
     public function generateHtml()
     {
         $stmt = $this->db->prepare("SELECT `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE '%color%'");
-        $tpl = $this->tpl;
+        // $tpl = $this->tpl;
         $stmt->execute();
-
         $colors = [];
-
-        while ($row = $stmt->fetch()) {
-           $xfields = xfieldsdataload($row['xfields']);
-           $color_name =  $xfields['color'];
-           $color_code = $xfields['color_code'];
-
-           array_push($colors,['name'=> $color_name,'code'=>$color_code]);
-        }
-
+        $codes = [];
         $content = '';
 
-        foreach($colors as $color){
-            $content .= "<div class='color' data-color='".$color['name']."' style='background:".$color['code']."'></div>";
+        while ($row = $stmt->fetch()) {
+            $xfields = xfieldsdataload($row['xfields']);
+            $color_name = $xfields['color'];
+            $color_code = $xfields['color_code'];
+            if (in_array($xfields['color'], $colors)) {
+                continue;
+            } else {
+                array_push($colors, $color_name);
+                array_push($codes, $color_code);
+                $content .= "<div class='color' data-color='" . $color_name . "' style='background:" . $color_code . "'></div>";
+            }
         }
+        $result = '<div class="color-block">' . $content . '</div>';
 
-        $result = '<div class="color-block">'.$content.'</div>';
-
-       echo $result;
-
+        echo $result;
 //        $tpl->dir = TEMPLATE_DIR;
 //        $tpl->load_template('filter.tpl');
 //
@@ -50,7 +48,7 @@ class Filter
 
     public function Filter($request, $dbh)
     {
-        if(empty($request)){
+        if (empty($request)) {
             return false;
         }
         $stmt = $this->db->prepare('SELECT `id`, `title`, `category`, `alt_name`, `short_story`, `xfields` FROM nimpix_space_db2.dle_post WHERE xfields LIKE :name');
@@ -66,12 +64,12 @@ class Filter
 
                 $xfields = xfieldsdataload($row['xfields']);
                 $post_image = self::post_image($row['short_story']);
-                $post_image = str_replace('https','http',$post_image);
+                $post_image = str_replace('https', 'http', $post_image);
                 $news_url = get_url(intval($row['category'])) . '/' . $row['id'] . '-' . $row['alt_name'] . '.html';
 
                 $skidka = '<span class="discount">-' . $xfields["skidka"] . '%</span>';
 
-                if(empty($xfields["skidka"])){
+                if (empty($xfields["skidka"])) {
                     $skidka = '';
                 }
 
@@ -82,7 +80,7 @@ class Filter
                           <a href="' . $news_url . '#akcii">
                             <!-- <img src="{image-1}" alt=""> -->
                             <img src="' . $post_image . '" alt="">
-                            '.$skidka.'
+                            ' . $skidka . '
                           </a>
                         </div>
                         <div class="old_price">Старая цена: <span>' . $xfields["cena_m_old"] . '</span> руб.</div>
@@ -99,7 +97,7 @@ class Filter
             }
         }
 
-        $result = '<div class="row">'.$render.'</div>';
+        $result = '<div class="row">' . $render . '</div>';
 
         return $result;
     }
